@@ -166,8 +166,8 @@ namespace Sudoku.Image
                         float x = (cellSize * a) + 60;
                         var letter = (char)(65 + a);
 
-                        canvas.DrawText(letter.ToString(), x, 25, textPaint);
-                        canvas.DrawText($"{a + 1}", 10, x + 18, textPaint);
+                        canvas.DrawText(letter.ToString(), x, 30, textPaint);
+                        canvas.DrawText($"{a + 1}", 15, x + 18, textPaint);
                     }
                     
                 }
@@ -183,7 +183,7 @@ namespace Sudoku.Image
             
             sudokuImg.DisplayBoard();
             sudokuImg.GenerateCompleteImage();
-            sudokuImg.GenerateIncompleteImage(45);
+            sudokuImg.GenerateIncompleteImage(number);
 
         }
     }

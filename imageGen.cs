@@ -29,9 +29,10 @@ namespace Sudoku.Image
         private void GenerateCompleteImage()
         {
             int cellSize = 60, gridSize = cellSize * 9;
+            int boardSize = gridSize + 40;
 
-            using (SKBitmap bitmap = new SKBitmap(gridSize, gridSize))
-            using (SKCanvas canvas = GenerateGrid(bitmap, cellSize, gridSize))
+            using (SKBitmap bitmap = new SKBitmap(boardSize, boardSize))
+            using (SKCanvas canvas = GenerateGrid(bitmap, cellSize, boardSize))
             using (SKPaint paint = new SKPaint())
             {
                 paint.Color = SKColors.Black;
@@ -48,12 +49,10 @@ namespace Sudoku.Image
                         for (int col = 0; col < 9; col++)
                         {
                             int number = Board[row, col];
-                            if (number != 0)
-                            {
-                                float x = col * cellSize + (cellSize / 3);
-                                float y = row * cellSize + (cellSize / 1.5f);
-                                canvas.DrawText(number.ToString(), x, y, textPaint);
-                            }
+
+                            float x = col * cellSize + (cellSize / 3);
+                            float y = row * cellSize + (cellSize / 1.5f);
+                            canvas.DrawText(number.ToString(), x + 40, y + 40, textPaint);
                         }
                     }
                 }
@@ -73,9 +72,10 @@ namespace Sudoku.Image
             RandomizeBoard(numo);
 
             int cellSize = 60, gridSize = cellSize * 9;
+            int boardSize = gridSize + 40;
 
-            using (SKBitmap bitmap = new SKBitmap(gridSize, gridSize))
-            using (SKCanvas canvas = GenerateGrid(bitmap, cellSize, gridSize))
+            using (SKBitmap bitmap = new SKBitmap(boardSize, boardSize))
+            using (SKCanvas canvas = GenerateGrid(bitmap, cellSize, boardSize))
             using (SKPaint paint = new SKPaint())
             {
                 paint.Color = SKColors.Black;
@@ -96,7 +96,7 @@ namespace Sudoku.Image
                             {
                                 float x = col * cellSize + (cellSize / 3);
                                 float y = row * cellSize + (cellSize / 1.5f);
-                                canvas.DrawText(number.ToString(), x, y, textPaint);
+                                canvas.DrawText(number.ToString(), x + 40, y + 40, textPaint);
                             }
                         }
                     }
@@ -129,7 +129,7 @@ namespace Sudoku.Image
                     }
         }
 
-        private SKCanvas GenerateGrid(SKBitmap bitmap, int cellSize, int gridSize)
+        private SKCanvas GenerateGrid(SKBitmap bitmap, int cellSize, int boardSize)
         {
             SKCanvas canvas = new SKCanvas(bitmap);
             using (SKPaint paint = new SKPaint())
@@ -137,16 +137,41 @@ namespace Sudoku.Image
                 canvas.Clear(SKColors.White);
 
                 paint.Color = SKColors.Black;
+                paint.StrokeWidth = 5;
+
+                canvas.DrawLine(40, 40, boardSize, 40, paint);
+                canvas.DrawLine(40, 40, 40, boardSize, paint);
+                
                 for (int i = 1; i < 9; i++)
                 {
                     if(i % 3 != 0) paint.StrokeWidth = 2;
                     else paint.StrokeWidth = 5;
 
                     
-                    int linePosition = i * cellSize;
-                    canvas.DrawLine(linePosition, 0, linePosition, gridSize, paint);
-                    canvas.DrawLine(0, linePosition, gridSize, linePosition, paint);
+                    int linePosition = (i * cellSize); //60
+                    canvas.DrawLine(linePosition + 40, 0 + 40, linePosition + 40, boardSize, paint); //vertical line
+                    canvas.DrawLine(0 + 40, linePosition + 40, boardSize, linePosition + 40, paint); //horizontal line
                 }
+
+                using (SKTypeface typeface = SKTypeface.FromFamilyName("Arial", SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright))
+                using (SKPaint textPaint = new SKPaint())
+                {
+
+                    textPaint.Color = new SKColor(30, 30, 30);
+                    textPaint.TextSize = 25;
+                    textPaint.Typeface = typeface;
+
+                    for(int a = 0; a <= 8; a++)
+                    {
+                        float x = (cellSize * a) + 60;
+                        var letter = (char)(65 + a);
+
+                        canvas.DrawText(letter.ToString(), x, 25, textPaint);
+                        canvas.DrawText($"{a + 1}", 10, x + 18, textPaint);
+                    }
+                    
+                }
+                
             }
 
             return canvas;

@@ -1,16 +1,9 @@
-using Sudoku;
-using Sudoku.Image;
-using Sudoku.Extensions;
+using Sudoku.Objects;
+using Sudoku.Tools;
 
-namespace Test
-{
-    public static class Program
-    {
-        public static void Main(string[] args)
-        {
+var game = new SudokuGame(43);
 
-            SudokuImage.GenerateComplete(45);
+game.DisplayBoard();
+game.GenerateCompleteImage();
+game.GenerateIncompleteImage();
 
-        }
-    }
-}

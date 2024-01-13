@@ -1,13 +1,10 @@
-﻿namespace Sudoku
+﻿using Cell = Sudoku.Objects.Cell;
+
+namespace Sudoku.Tools
 {
-    public class SudokuBoard 
+    public static class Board 
     {
-        private readonly int[,] _board;
-        public int[,] Board {get =>_board;}
-
-        public SudokuBoard() => _board = BoardGenerator();
-
-        private static int[,] BoardGenerator()
+        public static Cell[,] BoardGenerator()
         {
             int[,] board = new int[9,9];
 
@@ -19,20 +16,20 @@
 
             GeneratingTheRest(0, sq_n, board, n, sq_n);
 
-            return board;
+            var _cellBoard = new Cell[9,9];
+
+            for(int a = 0; a < 9; a++)
+                for(int b = 0; b < 9; b++)
+                    _cellBoard[a,b] = board[a,b];
+
+            return _cellBoard;
         }
-
-
-
         //board generation logic
-
 
         private static void DiagonalGenerator(int[,] board, int length, int sqr_length)
         {
             for(int i = 0; i < length; i += sqr_length)
-            {
-                FillBox(board, i, i, length, sqr_length);
-            }
+                FillBox(board, i, i, length, sqr_length);  
         }
 
         private static void FillBox(int[,] board, int row, int column, int length, int sqr_length)
@@ -61,22 +58,20 @@
                     if(board[rowStart + i, colStart + j] == num)
                         return false;
             
-            return true;
-
-            
+            return true;     
         }
 
         private static int RandomGen(int length)
         {
-            Random rand= new Random();
-            return (int) Math.Floor((double)(rand.NextDouble()*length + 1));
+            Random rand= new();
+            return (int) Math.Floor((double)(rand.NextDouble() * length + 1));
         }
 
         private static bool GeneratingTheRest(int i, int j, int[,] board, int length, int sqr_length)
         {
             if (j >= length && i < length - 1) 
             {
-                i = i + 1;
+                i++;
                 j = 0;
             }
 
@@ -115,11 +110,11 @@
         }
         private static bool CheckIfSafe(int i, int j, int num, int[,] board, int length, int sqr_length)
         {
-            return (unUsedInRow(board, length, i, num) && unUsedInCol(board, length, j, num) 
-                   && UnusedInBox(board, i-i%sqr_length, j-j%sqr_length, sqr_length, num));
+            return UnusedInRow(board, length, i, num) && UnusedInCol(board, length, j, num) 
+                   && UnusedInBox(board, i-i%sqr_length, j-j%sqr_length, sqr_length, num);
         }
 
-        private static bool unUsedInCol(int[,] board, int length, int j, int num)
+        private static bool UnusedInCol(int[,] board, int length, int j, int num)
         {
             for (int i = 0; i < length; i++)
                 if (board[i,j] == num)
@@ -128,7 +123,7 @@
             return true;
         }
 
-        private static bool unUsedInRow(int [,] board, int length, int i, int num)
+        private static bool UnusedInRow(int [,] board, int length, int i, int num)
         {
             for (int j = 0; j < length; j++)
                if (board[i,j] == num)
